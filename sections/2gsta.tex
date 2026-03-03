@@ -1,0 +1,263 @@
+\subsection{Motivational example}
+\subsubsection{Velocity-tracking problem}
+    \begin{equation*}
+    \left(1 + \cos^2(q)\right)\ddot{q} + g\sin(q) + b\left(\dot{q} + \arctan (\dot{q})\right) = u
+    \end{equation*}
+    where $q \in \R$ and $\dot{q} \in \R$ are state variables and $u \in \R$ is the torque control input
+\subsubsection{Solution}
+    \begin{equation}
+        \begin{split}
+        \dot{e}_2 = &-k_2 \lfloor e_1 \rceil^0 + \dot{\varphi} \underbrace{- bc\gamma k_1 \lfloor e_1 \rceil^{1/2} - bc\gamma k_2 \int_{0}^{t} \lfloor e_1(\tau) \rceil^0 d\tau}_{u(t)} \\
+        &+ bc\gamma \int_{0}^{t} \left[\dot{\varphi}(\tau) - b\left(k_1 \lfloor e_1(\tau) \rceil^{1/2}- e_2(\tau)\right)\right]d\tau
+        \end{split} 
+    \end{equation}
+% \begin{frame}[t]
+% \frametitle{Motivation}
+%     \begin{block}{Problems to be addressed}
+%        \begin{enumerate}
+%          \item<1-> $k_2$ is designed depending on $k_1$. In some instances this causes and algebraic loop.
+%          \item<2-> Although the perturbations $\dot{\varphi}$ can be bounded by a constant, the terms $- bc\gamma k_1 \lfloor e_1 \rceil^{1/2} - bc\gamma k_2 \int_{0}^{t} \lfloor e_1(\tau) \rceil^0 d\tau$ can be very large depending on initial conditions $e_1(0)$ and perturbations.
+%          \item<3-> The time variation in the input gain 
+%          \item<4->  
+%        \end{enumerate}
+%     \end{block}
+% \end{frame}
+
+\subsection{Generalized super-twisting algorithm}
+\subsubsection{Control law}
+The generalized super-twisting algorithm \cite{Cas:18} is given by
+\begin{equation}
+    \begin{split}
+        u &= -k_1 \phi_1(\sigma) + z \\ 
+        \dot{z} &= -k_2\phi_2(\sigma) \\
+        \phi_1(\sigma) &= \lceil \sigma \rfloor^{1/2} + \beta \sigma \\
+        \phi_2(\sigma) &= \frac{1}{2} \lceil \sigma \rfloor^0 + \frac{3}{2}\beta\lceil \sigma \rfloor^{1/2} + \beta^2\sigma  
+    \end{split}
+\end{equation}
+
+\subsection{Finding conditions on gains}
+\textbf{Cases}
+\begin{itemize}
+\item General case
+\item State-dependent perturbations and know input gain
+\item Time-dependent unknown input gain and perturbation
+\item Closing the loop
+\end{itemize}
+
+\subsubsection{General case}
+Scalar system
+\begin{equation}
+    \dot{\sigma} = \gamma(x, t)u + \varphi(x, t)
+    \label{eq:castillo-general-case}
+\end{equation}
+\begin{assumption}
+    The functions $\gamma(\sigma, t)$ and $\varphi(\sigma, t)$ are Lipschitz continuous functions with respect to $t$, and $\gamma(\sigma, t)$, $\varphi(\sigma, t) \in \mathcal{C}^1$ with respect to $\sigma$.
+\end{assumption}
+\begin{assumption}
+    The uncertain input gain function is bounded by
+            \begin{equation}
+               0 < k_m \leq \gamma(x, t) \leq k_M
+               \label{eq:castillo-7}
+            \end{equation}
+\end{assumption}
+\begin{assumption}
+    The perturbation term $\varphi(\sigma, t)$ can be split into two components
+         \begin{equation}
+            \varphi(\sigma, t) = \varphi_1(\sigma, t) + \varphi_2(\sigma, t),
+         \end{equation}
+         where is vanishing, i.e. $\varphi_1(0, t) = 0, \ \forall t \leq 0$, and is bounded by
+            \begin{equation}
+               |\varphi_1(\sigma, t)| \leq \alpha|\phi_1(\alpha)|
+            \end{equation}
+\end{assumption}
+\begin{assumption}
+    The total time derivative of $\frac{\varphi_2(\sigma, t)}{\gamma(\sigma, t)}$ is 
+            \begin{equation}
+               \frac{d}{dt}\left(\frac{\varphi_2(\sigma, t)}{\gamma(\sigma, t)}\right) = 
+               \underbrace{\frac{1}{\gamma}\frac{\partial \varphi_2}{\partial t} - \frac{\varphi_2}{\gamma^2}\frac{\partial \gamma}{\partial t}}_{\delta_1(\sigma, t)} + 
+               \underbrace{\left(\frac{1}{\gamma}\frac{\partial \varphi_2}{\partial \sigma} - \frac{\varphi_2}{\gamma^2}\frac{\partial \gamma}{\partial \sigma}\right)}_{\delta_2(\sigma, t)}\dot{\sigma}
+            \end{equation}
+            where $\delta_1(\sigma, t)$ and $\delta_2(\sigma, t)$ are bounded by positive constants
+            \begin{equation}
+               |\delta_1(\sigma, t)| \leq \bar{\delta}_1, \ |\delta_2(\sigma, t)| \leq \bar{\delta}_2
+            \label{eq:castillo-13}
+            \end{equation}
+\end{assumption}
+
+Closed-loop system
+      \begin{equation}
+         \dot{\sigma} = -k_1\gamma(\sigma, t)\phi_1(\sigma) + \varphi_1(\sigma, t) + \gamma(\sigma, t)\left(z + \frac{\varphi_2(\sigma, t)}{\gamma(\sigma, t)}\right)
+      \end{equation}
+      the system can be broken down
+      \begin{equation}
+         \begin{split}
+            \dot{\sigma}_1 &= \gamma(\sigma, t)\left(-k_1\phi_1(\sigma_1) + \frac{\varphi_1(\sigma_1,t)}{\gamma(\sigma, t)} + \sigma_2\right)\\
+            \dot{\sigma}_2 &= -k_2\phi_2(\sigma_1)+ \frac{d}{dt}\left(\frac{\varphi_2(\sigma, t)}{\gamma(\sigma, t)}\right)
+         \end{split}
+      \end{equation}
+      where $\sigma_1 = \sigma$ and $\sigma_2 = z + \frac{\varphi_2(\sigma, t)}{\gamma(\sigma, t)}$
+
+   \begin{theorem}[Castillo et al. \cite{Cas:18}]
+      \label{th:cas}
+      Suppose that $\gamma(\sigma, t)$ and $\varphi(x, t)$ of system \eqref{eq:castillo-general-case} satisfy \eqref{eq:castillo-7} and \eqref{eq:castillo-13}. Then, the states $\sigma_1$ and $\sigma_2$ converge to zero and z converges to $-\varphi(x, t)$, globally and in finite time, if GSTA gains $k_1$, $k_2$ and $\beta > 0$ are design as follows for any $\varepsilon > 0$
+      \begin{equation}
+         k_1 > \frac{(1+\varepsilon)}{4\varepsilon k_m}\left(\frac{\alpha}{k_m}(k_M - k_m) + \frac{\bar{\delta}_2\varepsilon}{\beta}(k_M + k_m + 2)\right) + \frac{(1+\varepsilon)}{4\varepsilon k_m}\sqrt{\Lambda_{k_1}} + \frac{\alpha}{k_m}
+      \end{equation}
+      \begin{equation}
+         \Lambda_{k_1} = \left(\frac{\alpha}{k_m}(k_M - k_m) + \frac{\bar{\delta}_2\varepsilon}{\beta}(k_M + k_m + 2)\right)^2 + 8\varepsilon(k_M - km) \left(\frac{\bar{\delta}_2}{\beta} + \bar{\delta}_1\right)
+      \end{equation}
+      \begin{equation}
+         k_M \left(2\sqrt{\underbar{h}\epsilon}\bar{c}- \frac{\bar{c}}{2}\sqrt{\Delta_{k_2}}\right)^2 + 2\bar{\delta}_1 < k_2 < k_M \left(2\sqrt{\underbar{h}\epsilon}\bar{c} + \frac{\bar{c}}{2}\sqrt{\Delta_{k_2}}\right)^2 + 2\bar{\delta}_1 
+      \end{equation}
+      where
+      \begin{equation*}
+         \Delta_{k_1} =16\underbar{h}\epsilon - 8 \left(\frac{(1+\epsilon)(k_M - k_m)}{\underbar{k}_1 k_m}\right) \times \left(\frac{(1+\epsilon)}{\underbar{k}_1k_m}\left[\frac{\bar{\delta}_2\alpha}{\beta}+2\bar{\delta}_1\right]+\frac{\bar{\delta}_2\epsilon}{\beta} + \frac{\alpha}{k_M}\right),
+      \end{equation*}
+      \begin{equation*}
+         \underbar{h} = 1 - \frac{\bar{\delta}_2}{\beta} \frac{k_m + \epsilon}{(k_1k_m - \alpha)}, \ \bar{c} = \frac{\underbar{k}_1k_m}{(1+\epsilon)(k_M - k_m)}, \ \underbar{k}_1 = k_1 - \frac{\alpha}{k_m}
+      \end{equation*}
+      Moreover, a system trajectory starting at $\sigma(0) = (\sigma_1(0), |\sigma_2(0))$ reaches the origin in a time smaller than 
+      \begin{equation}
+         T(\sigma(0)) = \frac{2}{\mu_2} \ln \left(\frac{\mu_2}{\mu_1}V^{1/2}(x_1(0), x_2(0)) + 1\right)
+      \end{equation}
+   \end{theorem}
+
+Choosing gains
+   \begin{figure}[h]
+      \includegraphics[width=0.6\textwidth]{figures/castillo-fig-1.png}
+   \end{figure}
+   \begin{figure}[h]
+      \includegraphics[width=0.6\textwidth]{figures/castillo-fig-2.png}
+   \end{figure}
+
+\subsection{State-dependent perturbations and know input gain}
+System
+\begin{equation}
+    \dot{\sigma} = u + \varphi(x, t)
+    \label{eq:castillo-17}
+\end{equation}
+\begin{assumption}
+    The function $\varphi(\sigma, t)$ is Lipschitz continuous functions with respect to $t$, and $\varphi(\sigma, t) \in \mathcal{C}^1$ with respect to $\sigma$.
+\end{assumption}
+\begin{assumption}
+    The total time derivative of $\frac{\varphi_2(\sigma, t)}{\gamma(\sigma, t)}$ is 
+            \begin{equation}
+               \frac{d}{dt}\left(\varphi_2(\sigma, t)\right) = 
+               \underbrace{\frac{\partial \varphi_2}{\partial t}}_{\delta_1(\sigma, t)} + 
+               \underbrace{\left(\frac{\partial \varphi_2}{\partial \sigma}\right)}_{\delta_2(\sigma, t)}\dot{\sigma}
+            \end{equation}
+\end{assumption}
+
+Closed-loop system
+\begin{equation}
+    \dot{\sigma} = -k_1\phi_1(\sigma) + \varphi_1(\sigma, t) + \left(z + \frac{\varphi_2(\sigma, t)}{\gamma(\sigma, t)}\right)
+\end{equation}
+the system can be broken down
+\begin{equation}
+    \begin{split}
+    \dot{\sigma}_1 &= \left(-k_1\phi_1(\sigma_1) + \varphi_1(\sigma_1,t) + \sigma_2\right)\\
+    \dot{\sigma}_2 &= -k_2\phi_2(\sigma_1)+ \frac{d}{dt}\left(\varphi_2(\sigma, t)\right)
+    \end{split}
+\end{equation}
+where $\sigma_1 = \sigma$ and $\sigma_2 = z + \varphi_2(\sigma, t)$
+
+\begin{corollary}[1, Castillo et al. \cite{Cas:18}]
+    Suppose that $\varphi(\sigma, t)$ of system \eqref{eq:castillo-17} $\delta_1(\sigma, t)$ and $\delta_2(\sigma, t)$ are bounded by $\bar{\delta}_1$ and $\bar{\delta}_2$, respectively. Then, the states $\sigma_1$ and $\sigma_2$ converge to zero and z converges to $-\varphi(\sigma, t)$, globally in finite-time, if GSTA gains $k_1$, $k_2$ and $\beta > 0$ are designed as follows for any $\epsilon > 0$
+    \begin{equation}
+        k_1 > \frac{2(1+\epsilon)\bar{\delta}_2}{\beta} + \alpha
+    \end{equation}
+    \begin{equation}
+        k_2 > \frac{1}{4\underbar{h}\epsilon}
+        \left(
+        \frac{(1+\epsilon)}{(k_1 - \alpha)}
+        \left(
+            \frac{\bar{\delta}_2\alpha}{\beta} + 2\bar{\delta}_1
+        \right)
+        + \frac{\bar{\delta}_2\epsilon}{\beta} + \alpha
+        \right)^2
+    \end{equation}
+\end{corollary}
+
+\subsection{Time-dependent unknown input gain and perturbation}
+Scalar system
+\begin{equation}
+    \dot{\sigma} = \gamma(t)u + \varphi(t)
+    \label{eq:castillo-24}
+\end{equation}
+\begin{assumption}
+    The functions $\gamma(t)$ and $\varphi(t)$ are Lipschitz continuous functions with respect to $t$.
+\end{assumption}
+\begin{assumption}
+    The uncertain input gain function is bounded by
+    \begin{equation}
+        0 < k_m \leq \gamma(t) \leq k_M
+        \label{eq:castillo-25}
+    \end{equation}
+\end{assumption}
+\begin{assumption}
+The total time derivative of $\frac{\varphi_2(t)}{\gamma(t)}$ is 
+\begin{equation}
+    \delta_1(t) := \frac{d}{dt}\left(\frac{\varphi_2(t)}{\gamma(t)}\right) = 
+    \frac{1}{\gamma}\frac{\partial \varphi_2}{\partial t} - \frac{\varphi_2}{\gamma^2}\frac{\partial \gamma}{\partial t}
+\end{equation}
+where $\delta_1(t)$ is bounded by positive a constant
+\begin{equation}
+    |\delta_1(t)| \leq \bar{\delta}_1
+\label{eq:castillo-27}
+\end{equation}
+\end{assumption}
+
+\subsection{Time-dependent unknown input gain and perturbation}
+Closed-loop system
+\begin{equation}
+    \dot{\sigma} = -k_1\gamma(t)\phi_1(\sigma) + \varphi_1(t) + \gamma(t)\left(z + \frac{\varphi_2(t)}{\gamma(t)}\right)
+\end{equation}
+the system can be broken down
+\begin{equation}
+    \begin{split}
+    \dot{\sigma}_1 &= \gamma(t)\left(-k_1\phi_1(\sigma_1) + \frac{\varphi_1(t)}{\gamma(t)} + \sigma_2\right)\\
+    \dot{\sigma}_2 &= -k_2\phi_2(\sigma_1)+ \frac{d}{dt}\left(\frac{\varphi_2(t)}{\gamma(t)}\right)
+    \end{split}
+\end{equation}
+where $\sigma_1 = \sigma$ and $\sigma_2 = z + \frac{\varphi_2(t)}{\gamma(t)}$
+
+\begin{corollary}[2, Castillo et al. \cite{Cas:18}]
+Suppose that $\gamma(t)$ and $\varphi(t)$ of system \eqref{eq:castillo-24} satisfy \eqref{eq:castillo-25} and \eqref{eq:castillo-27}. Then, the states $\sigma_1$ and $\sigma_2$ converge to zero and z converges to $-\frac{\varphi(t)}{\gamma(t)}$, globally and in finite-time, if GSTA gains $k_1, k_2$ and $\beta \geq 0$ are designed as follows for all $\epsilon > 0$
+\begin{equation}
+    k_1 > \frac{(1+\varepsilon)}{4\varepsilon k_m}\left(\frac{\alpha}{k_m}(k_M - k_m)\right) + \frac{(1+\varepsilon)}{4\varepsilon k_m}\sqrt{\Lambda_{k_1}} + \frac{\alpha}{k_m}
+\end{equation}
+\begin{equation}
+    \Lambda_{k_1} = 
+    \left(
+    \frac{\alpha}{k_m}(k_M - k_m)
+    \right)^2 + 16\varepsilon(k_M - km)\bar{\delta}_1
+\end{equation}
+\begin{equation}
+    k_M \left(2\sqrt{\epsilon}\bar{c}- \frac{\bar{c}}{2}\sqrt{\Delta_{k_2}}\right)^2 + 2\bar{\delta}_1 < k_2 < k_M \left(2\sqrt{\epsilon}\bar{c} + \frac{\bar{c}}{2}\sqrt{\Delta_{k_2}}\right)^2 + 2\bar{\delta}_1 
+\end{equation}
+where
+\begin{equation*}
+    \Delta_{k_1} =16\epsilon - 8 \left(\frac{(1+\epsilon)(k_M - k_m)}{\underbar{k}_1 k_m}\right) \times \left(\frac{(1+\epsilon)}{\underbar{k}_1k_m}2\bar{\delta}_1+ \frac{\alpha}{k_M}\right),
+\end{equation*}
+\begin{equation*}
+    \bar{c} = \frac{\underbar{k}_1k_m}{(1+\epsilon)(k_M - k_m)}, \ \underbar{k}_1 = k_1 - \frac{\alpha}{k_m}
+\end{equation*}
+\end{corollary}
+
+\subsection{Closing the loop}
+Example revisited
+\begin{equation*}
+    \left(1 + \cos^2(q)\right)\ddot{q} + g\sin(q) + b\left(\dot{q} + \arctan (\dot{q})\right) = u
+\end{equation*}
+
+\subsection{Key takeaways}
+Features
+\begin{itemize}
+    \item Deals well with matched uncertainties
+    \item Works for uncertain input gain
+    \item Rigorously proves control gain conditions for desired stability properties
+\end{itemize}
+Future work
+\begin{itemize}
+    \item Combine with adaptation law
+\end{itemize}

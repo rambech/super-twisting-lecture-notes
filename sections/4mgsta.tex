@@ -1,0 +1,163 @@
+\subsection{Problem statement}
+\subsubsection{Multivariable system}
+Consider the multivariable system
+\begin{equation}
+    \dot{x} = f(t, x) + G(t, x)u
+    \label{eq:moreno-system}
+\end{equation}
+where $x \in \R^n$ is the state vector, $u \in \R^n$ is the contorl input, $f: \R_+ \times \R^n \rightarrow \R^n$ is an uncertain vector field containing uncertainties and/or perturbations, and $G: \R_+ \times \R^n \rightarrow \R^{n \times n}$ is the uncertain input matrix.
+
+\subsubsection{Input matrix}
+The uncertain input matrix can be rewritten
+\begin{equation}
+    G(t, x) = \left(I + \Delta_G(t, x)\right)G_0(t, x)
+\end{equation}
+where $G_0: \R_+ \times \R^n \rightarrow \R^{n \times n}$ corresponds to the nominal part, which is assumed to be invertible, and $\Delta_G: \R_+ \times \R^n \rightarrow \R^{n \times n}$ is the uncertain term
+
+\subsection{Multivariable super-twisting algorithm}
+\subsubsection{Control law by Moreno et al. \cite{Mor:21}}
+The MGSTA is given by
+\begin{equation}
+    \begin{split}
+        u &= -k_1\phi_1(x) + bG_0^{-1}(t, x)v \\
+        \dot{v} &= -k_2\phi_2(x)
+    \end{split}
+    \label{eq:moreno-controller}
+\end{equation}
+The nonlinear functions $\phi_i: \R^n \rightarrow \R^n$ are monotonically increasing, $\phi_1$ is continuous everywhere and $\phi_2$ is continuous everywhere except possibly at $x=0$.
+
+
+Nonlinear functions
+\begin{align}
+    \phi_1 &= \left(\alpha\norm{x}^{-p}+\beta\right)x \label{eq:moreno-phi_1}\\
+    \phi_2 &= J(x)\phi_1(x) = c(x)\phi_1(x) \label{eq:moreno-phi_2}
+\end{align}
+
+
+
+\subsubsection{Decomposed perturbations}
+The uncertain term $f(t,x)$ is assumed to be decomposed as
+\begin{equation}
+    f(t, x) = f_1(t,x) + f_2(t,x) = \Delta_1(t,x)\phi_1(x) + f_2(t,x)
+    \label{eq:moreno-eq-10}
+\end{equation}
+where the function $f_2(t,x)$ is such that
+\begin{equation}
+    \frac{d}{dt}\left[\left(b\left(I + \Delta_G\right)^{-1}f_2\right)\right] = \Delta_2(t,x)\phi_2 + \Delta_3(t,x)\dot{x}
+    \label{eq:moreno-eq-11}
+\end{equation}
+where $\Delta_i : \R_+ \times \R^n \rightarrow \R^{n \times n}, i=1,2,3$.
+
+For the dynamical system \eqref{eq:moreno-system} and controller \eqref{eq:moreno-controller}, \eqref{eq:moreno-phi_1} and \eqref{eq:moreno-phi_2}, the following conditions hold for all $t \geq 0, x \in \R^n$.
+\begin{assumption}
+    There exit constants $g_M > 0, \delta_g \geq 0$ and $g_m^\Delta > 0$ such that
+            \begin{equation}
+                \begin{split}
+                    \norm{G(t, x)} &\leq g_M \\
+                    \norm{\Delta_G(t, x)} &\leq \delta_g \\
+                    \text{Sym}\left\{G(t, x)\right\} &\geq g_m^\Delta I
+                \end{split}
+            \end{equation}
+\end{assumption}
+\begin{assumption}
+    Matrices $\Delta_i, i=1,2,3$, in \eqref{eq:moreno-eq-10} and \eqref{eq:moreno-eq-11}, are bounded, there exist $\delta_i \geq 0$ such that 
+            \begin{equation*}
+                \norm{\Delta_i(t,x)} \leq \delta_i, i = 1,2,3.
+            \end{equation*}
+\end{assumption}
+\begin{assumption}
+    There exist positive constants $0 < \gamma_1^\Delta \leq \gamma_2^\Delta$ such that 
+            \begin{equation}
+                0 < \gamma_1^\Delta I \leq \text{Sym} \left\{\mathcal{J}(x)\left(I + \Delta_G\right)\right\} \leq \gamma_2^\Delta I
+            \end{equation}
+            As a consequence of these assumptions, there also exist constants $\gamma_3,\gamma_4,\gamma_5 > 0$, and $0 < \gamma_1^\Delta \leq\gamma_2^\Delta$ such that 
+            \begin{equation}
+                \begin{split}
+                    \text{Gram}\left\{\mathcal{J}G\right\} &\leq \gamma_3 I \\
+                    2\text{Sym}\left\{\Delta_G\mathcal{J}G\right\} &\leq \gamma_4 I \\
+                    \text{Gram}\left\{\Delta_G^\top\right\} &\leq \gamma_5 I \\
+                \end{split}
+            \end{equation}
+\end{assumption}
+
+\textbf{Closed-loop dynamics}
+The closed-loop dynamics including MGSTA is given by
+\begin{align}
+    \dot{x} &= f_1 + \left(I + \Delta_G\right)\left(-G_0k_1\phi_1 + bz\right) \\
+    \dot{z} &= -k_2\phi_2 + \Delta_2\phi_2+\Delta_3 \dot{x}
+\end{align}
+
+
+\begin{theorem}[Moreno et al. \cite{Mor:21}]
+Select $\alpha > 0, \beta > 0, b > 0$ and $p \in \left(0, \frac{1}{2}\right]$ and let Assumption 1 be satisfied. Assume further that the inequality 
+\begin{equation}
+    \gamma_1^\Delta g_m^\Delta > \gamma_4 + 2\sqrt{\gamma_3 \gamma_5}
+\end{equation} 
+is satisfied. Then, for arbitrary values of $\delta_2, \delta_3, \delta_3$, there exist positive constant controller gains $k_1, k_2$ such that $\left[\sigma^\top, z^\top\right]^\top$ is globally robust finite-stable.
+\end{theorem}
+
+\subsubsection{Algorithm 1}
+For proper selection of the control gains $k_1$ and $k_2$ consult the following algorithm
+\begin{enumerate}
+    \item Select $\alpha > 0, \beta > 0, b > 0$ and $p \in \left(0, \frac{1}{2}\right]$. The parameter $p$ should be selecting on the size of the perturbations.
+    \item Select $p_2 = p_2^*$ and $p_1 = p_1^*$ such that 
+    \begin{equation}
+        \gamma_1^\Delta > p_2\mu_4
+    \end{equation}
+    and 
+    \begin{equation}
+        \gamma_1^\Delta g_m^\Delta - \gamma_4 - \Gamma_0 (p_1, p_2) > 0
+    \end{equation}
+    are satisfied for $p_2 = p_2^*$ and $p_1 \geq p_1^*$.  For proper selection of the control gains $k_1$ and $k_2$ consult the following algorithm
+    \item Find a value $p^\#_1$ of $p_1$ such that $p_1 \geq p^\#_1$ and
+    \begin{equation}
+        \Gamma_1(p_1, p_2)p_1 > \Gamma_2(p_1, p_2)
+    \end{equation}
+    is satisfied for every $p_1 \geq p^\#_1$. This is always feasible.
+    For proper selection of the control gains $k_1$ and $k_2$ consult the following algorithm
+        \begin{enumerate}
+            \setcounter{enumi}{3}
+            \item Fix $p_2 = p_2^*, p_1\geq p_1^\#$ and $p_1 p_2 > 1$, choose
+            \begin{equation}
+                k_2 = b\frac{p_1}{p_2},
+            \end{equation}
+            and 
+            \begin{equation}
+                \frac{-\alpha_1 - \bar{\alpha}}{2\alpha_2} < k_1 < \frac{-\alpha_1 + \bar{\alpha}}{2\alpha_2}
+            \end{equation}
+            with $\bar{\alpha} = \sqrt{\alpha^2_1 - 4\alpha_2 \alpha_0}$
+        \end{enumerate}
+\end{enumerate}
+
+
+
+\subsection{Example: Four-wheeled omidirectional robot}
+{Sliding variables, \cite{Mor:21}}
+    \begin{figure}[h]
+        \includegraphics[width=0.6\textwidth]{figures/moreno-fig1.png}
+    \end{figure}
+
+{Position and orientation, \cite{Mor:21}}
+        \begin{figure}[h]
+            \includegraphics[width=0.6\textwidth]{figures/moreno-fig2.png}
+        \end{figure}
+
+
+{Armature voltages, \cite{Mor:21}}
+        \begin{figure}[h]
+            \includegraphics[width=0.6\textwidth]{figures/moreno-fig3.png}
+        \end{figure}
+
+\subsection{Key takeaways}
+{Features}
+        \begin{itemize}
+            \item Deals well with matched uncertainties
+            \item Works for uncertain input gain
+            \item Coupled MIMO formulation
+        \end{itemize}
+{Future work}
+        \begin{itemize}
+            \item Implement adaptive law
+            \item Cleaner formulations and communication
+        \end{itemize}
+

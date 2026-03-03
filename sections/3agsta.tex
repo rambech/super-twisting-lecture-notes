@@ -1,0 +1,112 @@
+\subsection{Control law}
+Like in \cite{Cas:18} the GSTA algorithm is given by
+\begin{equation}
+    \begin{split}
+        u &= -k_1 \phi_1(\sigma) + z \\ 
+        \dot{z} &= -k_2\phi_2(\sigma) \\
+        \phi_1(\sigma) &= \lceil \sigma \rfloor^{1/2} + \beta \sigma \\
+        \phi_2(\sigma) &= \frac{1}{2} \lceil \sigma \rfloor^0 + \frac{3}{2}\beta\lceil \sigma \rfloor^{1/2} + \beta^2\sigma  
+    \end{split}
+\end{equation}
+
+\subsubsection{Adaptive gain law}
+Using same adaptive law as \cite{Sht:10}
+\begin{equation}
+    \begin{split}
+    \dot{k}_1 &= 
+    \begin{cases}
+        &\omega_1 \sqrt{\frac{\gamma_1}{2}}, \text{ if } \sigma \neq 0, \\
+        &0, \qquad\ \ \text{ if } \sigma = 0
+    \end{cases} \\
+    k_2 &= 2\epsilon k_1 + \lambda + 4\epsilon^2
+    \end{split}
+    \label{eq:borlaug-adaptive-law}
+\end{equation}
+
+\subsubsection{Closed-loop system}
+    \begin{equation}
+        \dot{\sigma} = -k_1\gamma(\sigma, t)\phi_1(\sigma) + \varphi_1(\sigma, t) + \gamma(\sigma, t)\left(z + \frac{\varphi_2(\sigma, t)}{\gamma(\sigma, t)}\right)
+    \end{equation}
+    the system can be broken down
+    \begin{equation}
+        \begin{split}
+        \dot{\sigma}_1 &= \gamma(\sigma, t)\left(-k_1\phi_1(\sigma_1) + \frac{\varphi_1(\sigma_1,t)}{\gamma(\sigma, t)} + \sigma_2\right)\\
+        \dot{\sigma}_2 &= -k_2\phi_2(\sigma_1)+ \frac{d}{dt}\left(\frac{\varphi_2(\sigma, t)}{\gamma(\sigma, t)}\right)
+        \end{split}
+        \label{eq:borlaug-closed-loop}
+    \end{equation}
+    where $\sigma_1 = \sigma$ and $\sigma_2 = z + \frac{\varphi_2(\sigma, t)}{\gamma(\sigma, t)}$
+
+\begin{theorem}[Borlaug et al. \cite{Bor:22}]
+    Suppose that $\gamma(\sigma_1, t)$ and $\varphi(\sigma_1, t)$ in system \eqref{eq:castillo-general-case} satisfy Assumptions 1-4, from \cite{Cas:18}. Then, the closed-loop dynamics \eqref{eq:borlaug-closed-loop} are globally finite-time stable, such that the states $\sigma_1$ and $\sigma_2$ converge to zero and z converges to $-\varphi(0, t)/\gamma(0,t)$, globally and in finite time, ig the gains $k_1$ and $k_2$ are designed as expressed in \eqref{eq:borlaug-adaptive-law}, $\beta > 0, \lambda > 0, \omega_1 > 0, \gamma_1 > 0,$ and $\epsilon= \frac{\omega_2}{2\omega_1}\sqrt{\frac{\gamma_2}{\gamma_1}}$, where $\omega_2 > 0$ and $\gamma_2 > 0$.
+\end{theorem}
+\begin{rmk}
+    \begin{itemize}
+        \item The theorem and proof can be extended to $n$ dimensions by separating the problem into $n$ one-dimensional cases
+        \item The proof is similar to that of Shtessel et al. \cite{Sht:10}
+    \end{itemize}
+\end{rmk}
+
+\subsection{Real system}
+Equations of motion
+    \begin{equation}
+    \begin{split}
+        \dot{\xi} &= J(\eta_2)\zeta = 
+    \begin{bmatrix}
+        R_{Ib}^\top(\eta_2) && 0_{3 \times 3} && 0_{3 \times (n-1)} \\
+        0_{3 \times 3} && J^{-1}_{k,o}(\eta_2) && 0_{3 \times (n-1)} \\
+        0_{(n-1) \times 3} && 0_{(n-1) \times 3} && I_{(n-1) \times (n-1)}
+    \end{bmatrix}\zeta \\
+    M&(q)\dot{\zeta} + C(q, \zeta)\zeta + D(q, \zeta)\zeta + g(q, R_{Ib}) = \tau(q)
+    \end{split}
+\end{equation}
+where $\xi = \left[\eta_1^\top, \eta_2^\top, q^\top\right]^\top$, here $\eta_1 = \left[x, y, z\right]^\top \in \R^{6+(n-1)}$ is the position, $\eta_2 = \left[\phi, \theta, \psi\right]^\top \in \R^3$ are Euler angles and $q \in \R^{n-1}$ are the joint angles. The velocity vector $\zeta = \left[\nu^\top, \omega^\top, \dot{q}^\top\right]^\top \in \R^{6+(n-1)}$ comprises body-fixed linear and angular vehicle velocities $\nu$ and $\omega$, and joint velocities $\dot{q}$.
+
+
+\subsubsection{Tracking control law using AGSTA}
+We choose sliding manifold
+\begin{equation}
+    \sigma = \zeta - \zeta \in R^{6+(n-1)}
+\end{equation}
+and the control input is given by
+\begin{equation}
+    \tau(q) = u_{\text{AGSTA}} \in R^{6+(n-1)}
+\end{equation}
+
+\subsection{Experiments}
+Tracking performance \cite{Bor:22}
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{figures/borlaug-tracking.png}
+\end{figure}
+Gain evolution \cite{Bor:22}
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{figures/borlaug-gains.png}
+\end{figure}
+
+\subsection{Comparison}
+Performance \cite{Bor:22}
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{figures/borlaug-table-1.png}
+\end{figure}
+
+Actuation \cite{Bor:22}
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{figures/borlaug-table-2.png}
+\end{figure}
+
+
+
+\subsection{Key takeaways}
+Features
+\begin{itemize}
+    \item Deals well with matched uncertainties
+    \item Works for uncertain input gain
+    \item Practically proven control method with desirable stability guarantees
+    \item AGSTA demonstrates better tracking performance with GSTA with constant gains
+\end{itemize}
+Future work
+\begin{itemize}
+    \item Coupled MIMO formulation
+    \item Adaptive law with fewer parameters
+    \item Adaptive law that enables decreasing controller gain
+\end{itemize}
