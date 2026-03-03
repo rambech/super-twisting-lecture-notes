@@ -20,28 +20,35 @@
     \end{equation*}
     where $\lfloor \cdot \rceil^a = \lvert \cdot \rvert^a sgn(\cdot)$. The closed-loop dynamics then becomes 
     \begin{equation}
-        \dot{e}_1 = -k_1 \gamma(q) \lfloor e_1 \rceil^{1/2} + \gamma(q)\left[z - g\right]
+        \dot{e}_1 = -k_1 \gamma(q) \lfloor e_1 \rceil^{1/2} + \gamma(q)
+        \underbrace{
+            \left[z - g\sin(q) + b\left(e_1 + \dot{q}_d + \arctan(e_1 + \dot{q}_d) - \frac{\ddot{q}}{\gamma(q)}\right)\right]
+            }_{e_2}
     \end{equation}
-
-
-\subsubsection{Solution}
+    Now we differentiate $e_2$ with respect to time
+    \begin{equation}
+        \dot{e}_2 = -k_2\lfloor e_1 \rceil^0 +
+        \underbrace{
+            g\cos(q) - \left[\frac{\ddot{q}_d}{\gamma(q)} - \frac{\ddot{q}_d}{\gamma^2(q)}\right] + bc\ddot{q}_d
+        }_{\dot{\varphi}}
+        + bc\dot{e}_1
+    \end{equation}
+    where 
+    \begin{equation*}
+        c = \frac{(e_1 + \dot{q}_d)^2 + 2}{(e_1 + \dot{q}_d)^2 + 1}
+    \end{equation*}
     \begin{equation}
         \begin{split}
         \dot{e}_2 = &-k_2 \lfloor e_1 \rceil^0 + \dot{\varphi} \underbrace{- bc\gamma k_1 \lfloor e_1 \rceil^{1/2} - bc\gamma k_2 \int_{0}^{t} \lfloor e_1(\tau) \rceil^0 d\tau}_{u(t)} \\
         &+ bc\gamma \int_{0}^{t} \left[\dot{\varphi}(\tau) - b\left(k_1 \lfloor e_1(\tau) \rceil^{1/2}- e_2(\tau)\right)\right]d\tau
         \end{split} 
     \end{equation}
-% \begin{frame}[t]
-% \frametitle{Motivation}
-%     \begin{block}{Problems to be addressed}
-%        \begin{enumerate}
-%          \item<1-> $k_2$ is designed depending on $k_1$. In some instances this causes and algebraic loop.
-%          \item<2-> Although the perturbations $\dot{\varphi}$ can be bounded by a constant, the terms $- bc\gamma k_1 \lfloor e_1 \rceil^{1/2} - bc\gamma k_2 \int_{0}^{t} \lfloor e_1(\tau) \rceil^0 d\tau$ can be very large depending on initial conditions $e_1(0)$ and perturbations.
-%          \item<3-> The time variation in the input gain 
-%          \item<4->  
-%        \end{enumerate}
-%     \end{block}
-% \end{frame}
+    \begin{enumerate}
+        \item STA gain $k_2$ needs to be design based on a duncton depengind on STA gains $k_1$ and $k_2$. This is an algebraic loop.
+        \item Although the perturbations $\dot{\varphi}$ can be bounded by a constant, the terms $- bc\gamma k_1 \lfloor e_1 \rceil^{1/2} - bc\gamma k_2 \int_{0}^{t} \lfloor e_1(\tau) \rceil^0 d\tau$ can be very large depending on initial conditions $e_1(0)$ and perturbations.
+        \item The time variation in the control coefficient $\gamma(q(t))$ introduces the term $\frac{\ddot{q}_d}{\gamma^2(q(t))}\dot{\gamma}(q(t))$ to the total time-derivative, and the bounds of $\gamma(q(t))$ and its derivative $\dot{\gamma}(q(t))$ should be also taken into account in the controller gains design.
+        \item State-dependent perturbation imply state-dependent derivative which make the perturbation grow exponentially in time.
+    \end{enumerate}
 
 \subsection{Generalized super-twisting algorithm}
 \subsubsection{Control law}
@@ -269,6 +276,34 @@ Example revisited
 \begin{equation*}
     \left(1 + \cos^2(q)\right)\ddot{q} + g\sin(q) + b\left(\dot{q} + \arctan (\dot{q})\right) = u
 \end{equation*}
+The error dynamics, with error state $e_1 = \dot{q} - \dot{q}_d$, in closed-loop with GSTA, and perturbations split into two parts is 
+\begin{equation}
+    \dot{e}_1 = -k_1\gamma(q)\phi_1(e_1)
+    \underbrace{
+        - \gamma(q)be_1
+    }_{\varphi_1(e_1, t)} 
+    + \gamma(q)
+    \left[z
+    \underbrace{
+        - g\sin(q) - b\left(\dot{q}_d + \arctan(e_1 + \dot{q}_d)\right) - \frac{\ddot{q}_d}{\gamma(q)}
+    }_{\frac{\varphi_2(e_1, t)}{\gamma(q)}}
+    \right]
+\end{equation}
+
+Then the system with dynamic extension (what does he mean with dynamic extension) $e_2 = z + \frac{\varphi_2(e_1, t)}{\gamma(q)}$ can be written on the form
+
+\begin{equation}
+    \begin{split}
+        \dot{e}_1 &= -\gamma(q)k_1\phi_1(e_1) + \gamma(q)e_2 + \varphi_1(e_1, t) \\
+        \dot{e}_2 &= -k_2\phi_2(e_1) + \frac{d}{dt}\left(\frac{\varphi_2(e_1, t)}{\gamma(q)}\right)
+    \end{split}
+\end{equation}
+% where 
+% \begin{equation*}
+%     \frac{\varphi_2(e_1, t)}{\gamma(q)} = - g\sin(q) - b\left(\dot{q}_d + \arctan(e_1 + \dot{q}_d)\right) - \frac{\ddot{q}_d}{\gamma(q)}
+% \end{equation*} 
+
+With this design, the problem of the algebraic loop, uncertain control coefficient and state-dependent perturbations can be solved.
 
 \subsection{Key takeaways}
 Features
