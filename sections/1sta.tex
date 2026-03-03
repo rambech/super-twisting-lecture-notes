@@ -36,11 +36,32 @@ A sliding variable $\sigma = \sigma(x,t) \in \R$ is designed so that the system'
         \end{equation}
         The solution of system \eqref{eq:sliding-dynamics} is understood in the sense of Filippov \cite{Fil:88}.
 \end{assumption}
-
 \begin{rmk}
-    About Filippov
+    We write down 
+    \begin{equation*}
+        \dot{\sigma} = \phi(x,t) + b(x,t)u
+    \end{equation*}
 \end{rmk}
+\begin{rmk}
+    Sense of Filippov, from Sliding Mode Control and Observation \cite{shtessel2014sliding}
+\end{rmk}
+For a discontinuous, or an otherwise continuous system with discontinuous control, we can write the differential equation as:
+\begin{equation*}
+    \dot{x} = f^c(x)
+\end{equation*}
+where $f^c$ is discontinuous with respect to $x$. 
 
+\begin{wrapfigure}{r}{0.3\textwidth}
+    \vspace{-50pt}
+    \begin{center}
+        \includegraphics[width=0.28\textwidth]{figures/filippov.png}
+    \end{center}
+    \vspace{-40pt}
+\end{wrapfigure} 
+
+Main idea behind the solutions proposed by Filippov for differential equations with discontinuous right-hand sides is to construct a solution as the \say{average} of the solutions obtained by approaching the point of discontinuity from different angles.
+
+The average solution is chosen to be tangent to the manifold $\mathcal{S}$ at the point of discontinuity.
 \begin{assumption}
     Further, assume that function $b(x,t) \in \R$ is known and $b(x,t) \neq 0 \ \forall x \text{ and } t \in [0, \infty)$. 
 \end{assumption}
@@ -53,7 +74,7 @@ A sliding variable $\sigma = \sigma(x,t) \in \R$ is designed so that the system'
         where the finite boundary $\delta > 0$ exists but is not known.
 \end{assumption}
 \begin{rmk}
-    Make a remark on this
+    Means the perturbations are assumed to be vanishing with the square root of the sliding variable.
 \end{rmk}
     % \pause
     % \begin{block}{Note}
@@ -78,6 +99,9 @@ A sliding variable $\sigma = \sigma(x,t) \in \R$ is designed so that the system'
           \label{eq:shtessel-closed-loop}
         \end{split}
        \end{equation}
+\begin{rmk}
+    Write down closed-loop dynamics
+\end{rmk}
 
 \subsubsection{Adaptive gains}
     \begin{theorem}[Shtessel et al. \cite{Sht:10}]
@@ -185,11 +209,11 @@ To simplify the Lyapunov analysis we perform a change of variable
         In the second step of the proof, the stability analysis of the system given by the above equation is performed.
         We introduce the LFC
         \begin{equation}
-          V(z_1, z_2, \alpha, \beta) = V_0 + \frac{1}{2\gamma_1}\left(\alpha - \alpha^*\right)^2 + \frac{1}{2\gamma_2}\left(\beta - \beta^*\right)^2
+          V(z, \alpha, \beta) = V_0 + \frac{1}{2\gamma_1}\left(\alpha - \alpha^*\right)^2 + \frac{1}{2\gamma_2}\left(\beta - \beta^*\right)^2
         \end{equation}
         where 
         \begin{equation}
-          V_0(z) = \left(\lambda+4\epsilon^2\right)z_1^2 + z_2^2 - 4\epsilon z_1 z_2 = z^\top P z
+          V_0(z) = z^\top P z = \left(\lambda+4\epsilon^2\right)z_1^2 + z_2^2 - 4\epsilon z_1 z_2
         \end{equation}
         \begin{equation*}
           P = 
@@ -217,7 +241,9 @@ To simplify the Lyapunov analysis we perform a change of variable
           \left(\beta - 2\epsilon\alpha - \lambda - 4\epsilon^2\right) + 2\epsilon\delta && 4\epsilon 
         \end{bmatrix}
        \end{equation}
-
+       \begin{rmk}
+        The term $- 2\epsilon I$ is likely there to simplify the right-hand side
+       \end{rmk}
        To ensure positive definite $\tilde{Q}$ we enforce
         \begin{equation}
           \beta = 2\epsilon\alpha + \lambda + 4\epsilon^2
@@ -231,20 +257,27 @@ To simplify the Lyapunov analysis we perform a change of variable
         \begin{equation}
           \dot{V}_0 \leq - \frac{1}{|z_1|}z^\top\tilde{Q}z \leq - \frac{\epsilon}{|z_1|}z^\top z = - \frac{\epsilon}{|z_1|}\norm{z}^2
         \end{equation}
-
+        \begin{rmk}
+            I don't quite understand where ther $- \frac{\epsilon}{|z_1|}z^\top z$ term comes from
+        \end{rmk}
         We also have that  
         \begin{equation}
-          \lambda_{\text{min}}\left(P\right)\norm{z}^2 \leq z^\top P z \leq \lambda_{\text{max}}\left(P\right)\norm{z}^2 
+          \lambda_{\text{min}}\left(P\right)\norm{z}^2 \leq \underbrace{z^\top P z}_{V_0(z)} \leq \lambda_{\text{max}}\left(P\right)\norm{z}^2 
         \end{equation}
         where $\norm{z}^2 = z_1^2 + z_2^2 = |\sigma| + z_2^2$ and
         \begin{equation}
           |z_1| = |\sigma|^{1/2} \leq \norm{z}^2 \leq \frac{V_0^{1/2}(z)}{\lambda^{1/2}_{\text{min}}(P)}
         \end{equation}
+        \begin{rmk}
+            $\lambda^{1/2}_{\text{min}}(P)\norm{z}^2 \leq V_0^{1/2}(z)$, is this true? Shouldn't it be $\lambda^{1/2}_{\text{min}}(P)\norm{z} \leq V_0^{1/2}(z)$
+        \end{rmk}
         then 
         \begin{equation}
           \dot{V}_0(z) \leq -rV_0^{1/2}, \ r=\frac{2\epsilon\lambda^{1/2}_{\text{min}}(P)}{\lambda_{\text{max}}(P)}
         \end{equation}
-
+        \begin{rmk}
+            Jeg skjønner ikke helt hvor $r$ kommer fra heller
+        \end{rmk}
         We also have that  
         \begin{equation}
           \begin{split}

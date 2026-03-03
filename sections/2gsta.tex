@@ -4,6 +4,26 @@
     \left(1 + \cos^2(q)\right)\ddot{q} + g\sin(q) + b\left(\dot{q} + \arctan (\dot{q})\right) = u
     \end{equation*}
     where $q \in \R$ and $\dot{q} \in \R$ are state variables and $u \in \R$ is the torque control input
+
+    By defining $e_1 = \dot{q} - \dot{q}_d$, we get the following error dynamics
+    \begin{equation}
+        \dot{e}_1 = \gamma(q)u - \gamma(q)g\sin(q) - \gamma(q)b(e_1 + \dot{q}_d) + \arctan(e_1 + \dot{q}) - \ddot{q}
+    \end{equation}
+    where $\gamma(q) = 1/(1 + \cos^2(q))$. Here, the time-varying function $\gamma(q(t))$ is an uncertain time-varying control coefficient. Let us remark that $\gamma(q(t))$ is bounded by $0 < 1/2 \leq \gamma(q(t)) \leq 1$, with a bounded time derivative.
+
+    Use standard STA
+    \begin{equation*}
+        \begin{split}
+            u_{sta} &= -k_1 \lfloor e_1 \rceil^{1/2} + z \\
+            \dot{z} &= -k_2 \lfloor e_1 \rceil^{0}
+        \end{split}
+    \end{equation*}
+    where $\lfloor \cdot \rceil^a = \lvert \cdot \rvert^a sgn(\cdot)$. The closed-loop dynamics then becomes 
+    \begin{equation}
+        \dot{e}_1 = -k_1 \gamma(q) \lfloor e_1 \rceil^{1/2} + \gamma(q)\left[z - g\right]
+    \end{equation}
+
+
 \subsubsection{Solution}
     \begin{equation}
         \begin{split}

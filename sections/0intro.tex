@@ -11,17 +11,18 @@ Second-order system
         \dot{x}_2 &= h(x) + g(x)u
     \end{split}
 \end{equation*}
-where $h$ and $g$ are unknown nonlinear functions of time and $g(x) \geq g_0 > 0, \forall x$. If we want to stabilize the origin we can choose 
+where $h$ and $g$ are unknown nonlinear functions of $x$ and $g(x) \geq g_0 > 0, \forall x$. If we want to stabilize the origin we can choose 
 \begin{equation*}
     s = \lambda x_1 + x_2
 \end{equation*}
 with derivative 
 \begin{equation*}
-    \dot{s} = \lambda x_2 + h(x) + g(x)u
+    \dot{s} = \lambda\dot{x}_1 + \dot{x}_2 = \lambda x_2 + h(x) + g(x)u
 \end{equation*}
-if $s = 0$ we obtain our sliding manifold (surface). This gives the dynamics
+if $s = 0$ we obtain our sliding manifold (surface). 
+This gives the dynamics
 \begin{equation*}
-    x_2 = -\lambda x_1
+    \dot{x}_1 = -\lambda x_1
 \end{equation*}
 Meaning that the dynamics go exponentially to zero on the sliding manifold.
 
@@ -38,3 +39,12 @@ where
         -1, &s < 0 \\
     \end{cases}
 \end{equation*}
+
+The gain must be such that $\beta(x) \geq \varrho(x) + \beta_0, \beta_0 > 0$, for a value $\varrho(x)$ satisfying the inequality
+\begin{equation*}
+    \left|\frac{\lambda x_2 + h(x)}{g(x)}\right| \leq \varrho(x)
+\end{equation*}
+
+\begin{rmk}
+    The above statement means that we must have a control gain of a certain size in order to dominate the dynamics of the system. This implies that we need to have some knowledge of $h$ and $g$ in order to correctly tune the controller.
+\end{rmk}
