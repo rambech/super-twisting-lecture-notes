@@ -1,0 +1,344 @@
+
+\subsection{Intro}
+Key problems to solve
+\begin{enumerate}
+\item Chattering
+\item Control gain uncertainty and overestimation
+\item Input gain uncertainty 
+\end{enumerate}
+
+
+\subsubsection{System}
+Given a single-input uncertain nonlinear system on the form
+\begin{equation}
+    \dot{x} = f(x,t) + h(x,t)u
+    \label{eq:single-input}
+\end{equation}
+where $x \in \R^n$ is the state vector, $u \in \R$ is a control function, $f(x,t) \in \R$ is a differentiable, partially know vector-field.
+    % \begin{block}{Note}
+    %   Please note the  $|\phi(x,t)| \leq \delta|\sigma|^{1/2}$
+    % \end{block}
+
+\subsubsection{Assumptions}
+\begin{assumption}
+A sliding variable $\sigma = \sigma(x,t) \in \R$ is designed so that the system's \eqref{eq:single-input} desirable compensated dynamics are achieved in the sliding mode $\sigma = \sigma(x,t) = 0$.
+\end{assumption}
+
+\begin{assumption}
+    The system's \eqref{eq:single-input} input-output ($u \rightarrow \sigma$) dynamics are of a relative degree one, and the internal dynamics are stable.
+        Therefore, the input-output dynamics can be presented
+        \begin{equation}
+          \begin{split}
+            \dot{\sigma} &= \underbrace{\frac{\partial\sigma}{\partial t} +  \frac{\partial\sigma}{\partial x}f(x,t)}_{\phi(x,t)} + \underbrace{\frac{\partial\sigma}{\partial x}h(x)u}_{b(x,t)} \\
+            \dot{\sigma} &= \phi(x,t) + \omega,\quad \omega = b(x,t)u \iff u = b^{-1}(x,t)\omega
+          \end{split}
+          \label{eq:sliding-dynamics}
+        \end{equation}
+        The solution of system \eqref{eq:sliding-dynamics} is understood in the sense of Filippov \cite{Fil:88}.
+\end{assumption}
+
+\begin{rmk}
+    About Filippov
+\end{rmk}
+
+\begin{assumption}
+    Further, assume that function $b(x,t) \in \R$ is known and $b(x,t) \neq 0 \ \forall x \text{ and } t \in [0, \infty)$. 
+\end{assumption}
+\begin{assumption}
+    the perturbation function $\phi(x, t) \in \R$ is bounded 
+        \begin{equation}
+          |\phi(x,t)| \leq \delta |\sigma|^{1/2}
+          \label{eq:shtessel-a4}
+        \end{equation} 
+        where the finite boundary $\delta > 0$ exists but is not known.
+\end{assumption}
+    % \pause
+    % \begin{block}{Note}
+    %   Having the constant $\delta$ as a finite boundary on the sliding mode dynamics is a big assumption
+    % \end{block}
+
+\subsection{The adaptive STW controller}
+  \subsubsection{Controller}
+       The STW controller as written by Shtessel et al. \cite{Sht:10} is given by
+       \begin{equation}
+          \begin{split}
+            \omega &= -\alpha|\sigma|^{1/2}sgn(\sigma) + v \\
+            \dot{v} &= -\beta sgn (\sigma)
+          \end{split}
+          \label{eq:shtessel-stw}
+       \end{equation}
+       where $\alpha = \alpha(\sigma, \dot{\sigma}, t)$ and $\beta = \beta(\sigma, \dot{\sigma}, t)$ are adaptive gains. The closed-loop sliding dynamics are then on the form
+       \begin{equation}
+        \begin{split}
+          \dot{\sigma} &= -\alpha|\sigma|^{1/2}sgn(\sigma) + v + \phi(x,t) \\
+          \dot{v} &= -\beta sgn(\sigma)
+          \label{eq:shtessel-closed-loop}
+        \end{split}
+       \end{equation}
+
+\subsubsection{Adaptive gains}
+    \begin{theorem}[Shtessel et al. \cite{Sht:10}]
+      \label{th:sta}
+      Consider system \eqref{eq:shtessel-closed-loop}. Suppose that the perturbation $\phi(x,t)$ satisfies \eqref{eq:shtessel-a4} for some unknown constant $\delta > 0$. Then for any initial conditions $x(0), \sigma(0)$ the sliding surface $\sigma = 0$ will be reached in finite time via STW control \eqref{eq:shtessel-stw} with the adaptive gains  
+      \begin{equation}
+        \begin{split}
+          \dot{\alpha} &= 
+          \begin{cases}
+            &\omega_1 \sqrt{\frac{\gamma_1}{2}}, \text{ if } \sigma \neq 0, \\
+            &0, \qquad\ \ \text{ if } \sigma = 0
+          \end{cases} \\
+          \beta &= 2\epsilon\alpha + \lambda + 4\epsilon^2
+        \end{split}
+        \label{eq:adaptation-law}
+      \end{equation}
+      where $\epsilon, \lambda, \gamma_1 \text{ and } \omega_1$ are arbitrary positive constants.
+    \end{theorem}
+
+\subsubsection{Proof of Theorem \ref{th:sta}}
+      Proof in 2 steps
+      \begin{enumerate}
+        \item Change of variable
+        \item Lyapunov stability analysis to prove finite time convergence to the sliding manifold
+        % \item<3-> Prove boundedness of adaptive gains
+        % \item<4-> Prove finite 
+      \end{enumerate}
+      
+\begin{proof}%[Theorem \ref{th:sta}]
+To simplify the Lyapunov analysis we perform a change of variable
+    \begin{equation*}
+        z = \begin{bmatrix}
+        z_1 \\ z_2 
+        \end{bmatrix}
+        = \begin{bmatrix}
+        |\sigma|^{1/2}sgn(\sigma) \\ v
+        \end{bmatrix}
+    \end{equation*}
+    then rewrite \eqref{eq:shtessel-closed-loop} to 
+    \begin{equation}
+        \begin{cases}
+        \dot{z}_1 &= \frac{1}{|z_1|}\left(-\frac{\alpha}{2}z_1 + \frac{1}{2}z_2 + \frac{1}{2}\phi(x,t)\right) \\
+        \dot{z}_2 &= -\frac{\beta}{|z_1|}z_1
+        \end{cases}
+        \label{eq:shtessel-transformed-system}
+    \end{equation}
+
+    Equation \eqref{eq:shtessel-transformed-system} can then be written on matrix form
+        \begin{equation}
+          \dot{z} = 
+          % A(z_1)z+g(z_1)\phi(x,t)
+          % \begin{bmatrix}
+          %   \dot{z}_1 \\ \dot{z}_2 
+          % \end{bmatrix}
+          % = 
+          \underbrace{
+            \frac{1}{|z_1|}
+          \begin{bmatrix}
+            -\frac{\alpha}{2} && \frac{1}{2} \\ 
+            -\beta && 0
+          \end{bmatrix}
+          }_{A(z_1)}
+          \begin{bmatrix}
+            z_1 \\ z_2 
+          \end{bmatrix}
+          +
+          \underbrace{
+            \frac{1}{|z_1|}
+          \begin{bmatrix}
+            \frac{1}{2} \\ 0
+          \end{bmatrix} 
+          }_{g(z_1)}
+          \phi(x, t)
+        \end{equation}
+
+        % where 
+        % \begin{equation*}
+        %   z = \begin{bmatrix}
+        %     \dot{z}_1 \\ \dot{z}_2 
+        %   \end{bmatrix}, \
+        %   A(z_1) = 
+        %   \frac{1}{|z_1|}\begin{bmatrix}
+        %     -\frac{\alpha}{2} && \frac{1}{2} \\ 
+        %     -\beta && 0
+        %   \end{bmatrix}, \
+        %   g(z_1) =
+        %   \frac{1}{|z_1|}\begin{bmatrix}
+        %     \frac{1}{2} \\ 0
+        %   \end{bmatrix}
+        % \end{equation*}
+
+        \begin{rmk}[Observe]
+        We observe the following
+        \begin{enumerate}
+            \item If $z_1, z_2 \to 0$ in finite time then $\sigma_1, \sigma_2 \to 0$ in finite time, and
+            \item $|z_1|=|\sigma|^{1/2}$ and $sgn(z_1) = sgn(\sigma)$
+        \end{enumerate}
+        \end{rmk}
+
+        \textbf{Lyapunov analysis:}
+        In the second step of the proof, the stability analysis of the system given by the above equation is performed.
+        We introduce the LFC
+        \begin{equation}
+          V(z_1, z_2, \alpha, \beta) = V_0 + \frac{1}{2\gamma_1}\left(\alpha - \alpha^*\right)^2 + \frac{1}{2\gamma_2}\left(\beta - \beta^*\right)^2
+        \end{equation}
+        where 
+        \begin{equation}
+          V_0(z) = \left(\lambda+4\epsilon^2\right)z_1^2 + z_2^2 - 4\epsilon z_1 z_2 = z^\top P z
+        \end{equation}
+        \begin{equation*}
+          P = 
+          \begin{bmatrix}
+            \lambda+4\epsilon^2 && -2\epsilon \\ 
+            -2\epsilon && 1
+          \end{bmatrix},
+          \ \forall \lambda, \epsilon > 0.
+        \end{equation*}
+        where $\alpha^*, \beta^* > 0$ are some constants.
+
+        The derivative of the Lyapunov function candidate is
+       \begin{equation}
+        \dot{V}(z, \alpha, \beta) = \dot{z}^\top P z + z^\top P \dot{z} + \frac{1}{\gamma_1}\left(\alpha - \alpha^*\right)\dot{\alpha} + \frac{1}{\gamma_2} \left(\beta - \beta^*\right)\dot{\beta}
+       \end{equation}
+       We can bound the first two terms
+       \begin{equation}
+        \dot{V}_0 = \dot{z}^\top P z + z^\top P \dot{z} \leq -\frac{1}{|z_1|}z^\top\tilde{Q}z
+       \end{equation}
+       where the symmetric matrix $\tilde{Q}$ is given by
+       \begin{equation}
+        \tilde{Q} - 2\epsilon I = 
+        \begin{bmatrix}
+          2\lambda\alpha + 4\epsilon\left(2\epsilon\alpha - \beta \right) - 2\left(\lambda + 4\epsilon^2\right)\delta && * \\
+          \left(\beta - 2\epsilon\alpha - \lambda - 4\epsilon^2\right) + 2\epsilon\delta && 4\epsilon 
+        \end{bmatrix}
+       \end{equation}
+
+       To ensure positive definite $\tilde{Q}$ we enforce
+        \begin{equation}
+          \beta = 2\epsilon\alpha + \lambda + 4\epsilon^2
+        \end{equation}
+        The matrix $\tilde{Q}$ is positive definite with a minimal eigenvalue $\lambda_{\text{min}}(\tilde{Q}) \geq 2\epsilon$ if 
+        \begin{equation}
+          \alpha > \frac{\epsilon\delta^2 + \left(\lambda + 4\epsilon^2\right)\left(2\epsilon + \delta\right) + \epsilon}{\lambda}
+          \label{eq:shtessel-inequality-19}
+        \end{equation}
+        We then have that
+        \begin{equation}
+          \dot{V}_0 \leq - \frac{1}{|z_1|}z^\top\tilde{Q}z \leq - \frac{\epsilon}{|z_1|}z^\top z = - \frac{\epsilon}{|z_1|}\norm{z}^2
+        \end{equation}
+
+        We also have that  
+        \begin{equation}
+          \lambda_{\text{min}}\left(P\right)\norm{z}^2 \leq z^\top P z \leq \lambda_{\text{max}}\left(P\right)\norm{z}^2 
+        \end{equation}
+        where $\norm{z}^2 = z_1^2 + z_2^2 = |\sigma| + z_2^2$ and
+        \begin{equation}
+          |z_1| = |\sigma|^{1/2} \leq \norm{z}^2 \leq \frac{V_0^{1/2}(z)}{\lambda^{1/2}_{\text{min}}(P)}
+        \end{equation}
+        then 
+        \begin{equation}
+          \dot{V}_0(z) \leq -rV_0^{1/2}, \ r=\frac{2\epsilon\lambda^{1/2}_{\text{min}}(P)}{\lambda_{\text{max}}(P)}
+        \end{equation}
+
+        We also have that  
+        \begin{equation}
+          \begin{split}
+            \dot{V}(z, \alpha, \beta) &= \dot{z}^\top P z + z^\top P \dot{z} + \frac{1}{\gamma_1}\left(\alpha - \alpha^*\right)\dot{\alpha} + \frac{1}{\gamma_2} \left(\beta - \beta^*\right)\dot{\beta} \\
+            &\leq -\frac{1}{|z_1|}z^\top\tilde{Q}z + \frac{1}{\gamma_1}\left(\alpha - \alpha^*\right)\dot{\alpha} + \frac{1}{\gamma_2} \left(\beta - \beta^*\right)\dot{\beta} \\
+            &\leq -rV_0^{1/2} + \frac{1}{\gamma_1}\left(\alpha - \alpha^*\right)\dot{\alpha} + \frac{1}{\gamma_2} \left(\beta - \beta^*\right)\dot{\beta} \\
+            &= -rV_0^{1/2} - \frac{\omega_1}{\sqrt{2\gamma_1}}\left|\alpha - \alpha^*\right|\dot{\alpha} - \frac{\omega_2}{\sqrt{2\gamma_2}} \left|\beta - \beta^*\right| \\
+            &+ \frac{1}{\gamma_1}\left(\alpha - \alpha^*\right)\dot{\alpha} + \frac{1}{\gamma_2} \left(\beta - \beta^*\right)\dot{\beta} + \frac{\omega_1}{\sqrt{2\gamma_1}}\left|\alpha - \alpha^*\right| + \frac{\omega_2}{\sqrt{2\gamma_2}} \left|\beta - \beta^*\right|
+          \end{split}
+        \end{equation}
+        Using the inequality
+        \begin{equation}
+          \left(x^2 + y^2 + z^2\right)^{1/2} \leq |x| + |y| + |z|
+        \end{equation}
+        using this for the Lyapunov candidate function
+        \begin{equation}
+          -rV_0^{1/2} - \frac{\omega_1}{\sqrt{2\gamma_1}}\left|\alpha - \alpha^*\right|\dot{\alpha} - \frac{\omega_2}{\sqrt{2\gamma_2}} \left|\beta - \beta^*\right| \leq -\eta V(z,\alpha,\beta)^{1/2}
+          \label{eq:shtessel-bound-a}
+        \end{equation}
+        where $\eta = \text{min}(r, \omega_1, \omega_2)$.
+
+        Using equation \eqref{eq:shtessel-bound-a} we can rewrite the upper bound on $\dot{V}$  
+        \begin{equation}
+          \begin{split}
+            \dot{V}(z, \alpha, \beta) \leq -\eta V(z,\alpha,\beta)^{1/2} &+ \frac{1}{\gamma_1}\left(\alpha - \alpha^*\right)\dot{\alpha} + \frac{1}{\gamma_2} \left(\beta - \beta^*\right)\dot{\beta} \\
+            &+ \frac{\omega_1}{\sqrt{2\gamma_1}}\left|\alpha - \alpha^*\right| + \frac{\omega_2}{\sqrt{2\gamma_2}} \left|\beta - \beta^*\right|
+          \end{split}
+        \end{equation}
+        Assuming the adaptation law \eqref{eq:adaptation-law} makes the adaptive gains $\alpha(t)$ and $\beta(t)$ bounded there exists positive constants $\alpha^*$ and $\beta^*$ such that $\alpha(t) - \alpha^* > 0$ and $\beta(t) - \beta^* > 0, \ \forall t \geq 0$.
+        Using this assumption we can reduce the upper bound expression to
+        \begin{equation}
+            \dot{V}(z, \alpha, \beta) \leq -\eta V(z,\alpha,\beta)^{1/2} + \xi
+            \label{eq:shtessel-eq-29}
+        \end{equation}
+        where 
+        \begin{equation}
+          \xi = -\left|\alpha - \alpha^*\right|\left(\frac{1}{\gamma_1}\dot{\alpha} - \frac{\omega_1}{\sqrt{2\gamma_1}}\right) - \left|\beta - \beta^*\right|\left(\frac{1}{\gamma_2}\dot{\beta} - \frac{\omega_2}{\sqrt{2\gamma_2}}\right) 
+        \end{equation}
+        We want to ensure $\xi = 0$
+
+        \begin{equation}
+          \dot{\alpha} = \omega_1 \sqrt{\frac{\gamma_1}{2}}
+          \label{eq:shtessel-alpha-dot}
+        \end{equation}
+        \begin{equation}
+          \dot{\beta} = \omega_2 \sqrt{\frac{\gamma_2}{2}}
+        \end{equation}
+        If we choose $\epsilon = \frac{\omega_2}{2\omega_1} \sqrt{\frac{\gamma_2}{\gamma_1}}$ and differentiating $\beta$ as given by \eqref{eq:adaptation-law} we get 
+        \begin{equation}
+          \dot{\beta} = 2\epsilon\dot{\alpha} = 2\epsilon\omega_1 \sqrt{\frac{\gamma_1}{2}} = \omega_2 \sqrt{\frac{\gamma_2}{2}}
+        \end{equation}
+
+        \textbf{Observe.}
+        For the controller to converge in finite time the inequality \eqref{eq:shtessel-inequality-19}. This implies that $\alpha(t)$ must increase according to \eqref{eq:shtessel-alpha-dot} until \eqref{eq:shtessel-inequality-19} is met in order to guarantee a positive definite $\tilde{Q}$ matrix.
+
+        \begin{quote}
+          Also, as soon as the sliding variable $\sigma$ and its derivative converges to zero it does not make sense to increase $\alpha(t)$ and $\beta(t)$ by making $\dot{\alpha} = 0$ as $\sigma = 0$. - Shtessel et al. \cite{Sht:10}
+        \end{quote}
+        Hence, we obtain the adaptation law \eqref{eq:adaptation-law}. $\qed$
+        % \begin{alertblock}{Comment}
+    %   It might not make sense to \emph{increase} gains after the sliding manifold is reached, however, for tracking problems it might be desirable to \emph{decrease} the control gains after the sliding manifold is reached to avoid overestimation. 
+    % \end{alertblock}
+\end{proof}
+
+\subsection{Propositions}
+\begin{proposition}
+    The adaptive gains $\alpha(t)$ and $\beta(t)$ are bounded.
+\end{proposition}
+\begin{proof}
+    A solution to the adaptive gain $\alpha(t)$ in \eqref{eq:adaptation-law}
+    \begin{equation}
+    \alpha =
+    \begin{cases}
+        \alpha(0) + \omega_1\sqrt{\frac{\gamma_1}{2}}t, \ \ 0 \leq t \leq t_r \\
+        \alpha(0) + \omega_1\sqrt{\frac{\gamma_1}{2}}t_r, \ t > t_r
+    \end{cases}
+    \end{equation}
+    Hence, $\alpha(t)$ and $\beta(t)$ are bounded. $\qed$
+\end{proof}
+
+\begin{proposition}
+    The finite time $t_r$ can be estimated as
+\begin{equation}
+    t_r \leq \frac{2V^{1/2}(0)}{\eta}
+\end{equation}
+where $\eta = \text{min}(r, \omega_1, \omega_2)$.
+\end{proposition}
+\begin{proof}
+    Since the right-hand side of the inequality \eqref{eq:shtessel-inequality-19} is bounded and $\alpha(t)$ is increasing linearly with respect to time according to the adaptation law \eqref{eq:adaptation-law}, it is met in finite time.
+      The above inequality is found by integrating \eqref{eq:shtessel-eq-29}.
+      $\qed$
+\end{proof}
+
+Key takeaways
+\begin{itemize}
+    \item Deals well with matched uncertainties
+    \item Chattering is attenuated by having the switching term behind an integrator
+    \item Adaptive gain law is obtained and drives the system to the desired state in finite time
+\end{itemize}
+\begin{itemize}
+    \item The input gain is assumed known
+    \item Controller gains are increasing
+    \item Many design variables with tuning lack of intuition
+\end{itemize}

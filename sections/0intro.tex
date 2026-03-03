@@ -1,0 +1,40 @@
+\subsection{By the end of this lecture}
+\begin{itemize}
+    \item You should have an overview of super-twisting sliding mode control, strengths, weaknesses, variations and solutions
+\end{itemize}
+
+\subsection{Sliding mode recap}
+Second-order system 
+\begin{equation*}
+    \begin{split}
+        \dot{x}_1 &= x_2 \\
+        \dot{x}_2 &= h(x) + g(x)u
+    \end{split}
+\end{equation*}
+where $h$ and $g$ are unknown nonlinear functions of time and $g(x) \geq g_0 > 0, \forall x$. If we want to stabilize the origin we can choose 
+\begin{equation*}
+    s = \lambda x_1 + x_2
+\end{equation*}
+with derivative 
+\begin{equation*}
+    \dot{s} = \lambda x_2 + h(x) + g(x)u
+\end{equation*}
+if $s = 0$ we obtain our sliding manifold (surface). This gives the dynamics
+\begin{equation*}
+    x_2 = -\lambda x_1
+\end{equation*}
+Meaning that the dynamics go exponentially to zero on the sliding manifold.
+
+Therefore, we want to choose a control law that sends the trajectory to the sliding manifold and stays there, i.e. $s = 0$ and $\dot{s} = 0$. Through Lyapunov analysis we end up with the function
+\begin{equation*}
+    u = -\beta(x) sgn (s)
+\end{equation*}
+where 
+\begin{equation*}
+    sgn(s) = 
+    \begin{cases}
+        1, &s > 0 \\
+        0, &s = 0 \\
+        -1, &s < 0 \\
+    \end{cases}
+\end{equation*}

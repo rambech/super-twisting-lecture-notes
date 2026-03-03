@@ -1,5 +1,18 @@
 \documentclass{article}
+\usepackage[a4paper, total={6in, 9.5in}]{geometry}
 \usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{assumption}{Assumption}
+\newtheorem{rmk}{Remark}
+\newtheorem{proposition}{Proposition}
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\norm}[1]{\lvert#1\rvert}
 
 \title{Super-twisting lecture notes}
 \author{Alexander Rambech}
@@ -10,13 +23,18 @@
 \maketitle
 
 \section{Introduction}
-\subsection{By the end of this lecture}
-\begin{itemize}
-    \item You should have an overview of super-twisting sliding mode control, strengths, weaknesses, variations and solutions
-    \item 
-\end{itemize}
+\input{sections/0intro.tex}
 
+\section{Adaptive super-twisting algorithm}
+\input{sections/1sta.tex}
 
+\section{Generalized super-twisting algorithm}
+\input{sections/2gsta.tex}
 
+\section{Adaptive generalized super-twisting algorithm}
+\input{sections/3agsta.tex}
+
+\section{Multivariable generalized super-twisting algorithm}
+\input{sections/4mgsta.tex}
 
 \end{document}

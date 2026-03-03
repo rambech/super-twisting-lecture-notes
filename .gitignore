@@ -1,0 +1,37 @@
+# Ignore other files and directories
+.DS_Store
+.vscode
+
+# Ignore images
+figures/*.pdf
+*.png
+*.jpg
+
+# Ignore intermediate files
+*.bcf
+*.toc
+*.aux
+*.xml
+*.out
+*.blg
+*.log
+*.lot
+*.lof
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.gz
+*.acn
+*.glo*
+*.ist
+*.slo
+*.spl
+*.gls*
+*.glg*
+*.slg
+*.sls
+*.bst
+*.snm
+*.nav
+*.pdfsync
