@@ -122,7 +122,10 @@ Closed-loop system
             \dot{\sigma}_2 &= -k_2\phi_2(\sigma_1)+ \frac{d}{dt}\left(\frac{\varphi_2(\sigma, t)}{\gamma(\sigma, t)}\right)
          \end{split}
       \end{equation}
-      where $\sigma_1 = \sigma$ and $\sigma_2 = z + \frac{\varphi_2(\sigma, t)}{\gamma(\sigma, t)}$
+      where $\sigma_1 = \sigma$ and $\sigma_2 = z + \frac{\varphi_2(\sigma, t)}{\gamma(\sigma, t)}$. 
+      \begin{rmk}
+        In the paper, the state $\sigma_2$ is referred to as a dynamic extension
+      \end{rmk}
 
    \begin{theorem}[Castillo et al. \cite{Cas:18}]
       \label{th:cas}
@@ -145,17 +148,20 @@ Closed-loop system
       \end{equation*}
       Moreover, a system trajectory starting at $\sigma(0) = (\sigma_1(0), |\sigma_2(0))$ reaches the origin in a time smaller than 
       \begin{equation}
-         T(\sigma(0)) = \frac{2}{\mu_2} \ln \left(\frac{\mu_2}{\mu_1}V^{1/2}(x_1(0), x_2(0)) + 1\right)
+         T(\sigma(0)) = \frac{2}{\mu_2} \ln \left(\frac{\mu_2}{\mu_1}V^{1/2}(\sigma_1(0), \sigma_2(0)) + 1\right)
       \end{equation}
    \end{theorem}
 
-Choosing gains
+Choosing gains (Figures here)
 %    \begin{figure}[h]
 %       \includegraphics[width=0.6\textwidth]{figures/castillo-fig-1.png}
 %    \end{figure}
 %    \begin{figure}[h]
 %       \includegraphics[width=0.6\textwidth]{figures/castillo-fig-2.png}
 %    \end{figure}
+\begin{rmk}
+    The GSTA gain $\beta$ does not only allow to guarantee the global stability of the system. It can also help reduce the chattering effect by reducing the minimum value of gains $k_1$ and $k_2$. Figure
+\end{rmk}
 
 \subsection{State-dependent perturbations and know input gain}
 System
@@ -276,7 +282,11 @@ Example revisited
 \begin{equation*}
     \left(1 + \cos^2(q)\right)\ddot{q} + g\sin(q) + b\left(\dot{q} + \arctan (\dot{q})\right) = u
 \end{equation*}
-The error dynamics, with error state $e_1 = \dot{q} - \dot{q}_d$, in closed-loop with GSTA, and perturbations split into two parts is 
+The error dynamics, with error state $e_1 = \dot{q} - \dot{q}_d$, in closed-loop (probably already on the board)
+\begin{equation}
+    \dot{e}_1 = \gamma(q)u - \gamma(q)g\sin(q) - \gamma(q)b(e_1 + \dot{q}_d) + \arctan(e_1 + \dot{q}) - \ddot{q}
+\end{equation}
+With GSTA, and perturbations split into two parts is 
 \begin{equation}
     \dot{e}_1 = -k_1\gamma(q)\phi_1(e_1)
     \underbrace{

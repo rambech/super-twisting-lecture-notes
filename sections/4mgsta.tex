@@ -33,7 +33,15 @@ Nonlinear functions
     \phi_2 &= J(x)\phi_1(x) = c(x)\phi_1(x) \label{eq:moreno-phi_2}
 \end{align}
 
+where $J(x)$ is the Jacobian matrix of $\phi_1(x)$ and $c(x)$ is a scalar function, both of which are defined in $\R^n \backslash \left\{0\right\}$, i.e.
+\begin{equation}
+    J(x) = \frac{\partial\phi_1(x)}{\partial x} = \left(\alpha\norm{x}^{-p}+\beta\right)I - \alpha p \frac{\norm{x}^{-p}}{\norm{x}}xx^\top
+\end{equation}
+\begin{equation}
+    c(x) = \alpha(1 - p)\norm{x}^{-p} + \beta
+\end{equation}
 
+Scalar gain $k_1$ and $k_2$, while $b, \alpha, \beta >0$ and $p \in \left(0, \frac{1}{2}\right]$ are arbitrary. 
 
 \subsubsection{Decomposed perturbations}
 The uncertain term $f(t,x)$ is assumed to be decomposed as
@@ -79,7 +87,9 @@ For the dynamical system \eqref{eq:moreno-system} and controller \eqref{eq:moren
                 \end{split}
             \end{equation}
 \end{assumption}
-
+\begin{rmk}
+    For a matrix $M \in \R^{n \times n}$, $\text{Sym}\left\{M\right\} = \frac{1}{2}(M + M^\top)$, $\text{Gram}\left\{M\right\} = M^\top M$
+\end{rmk}
 \textbf{Closed-loop dynamics}
 The closed-loop dynamics including MGSTA is given by
 \begin{align}
@@ -93,7 +103,7 @@ Select $\alpha > 0, \beta > 0, b > 0$ and $p \in \left(0, \frac{1}{2}\right]$ an
 \begin{equation}
     \gamma_1^\Delta g_m^\Delta > \gamma_4 + 2\sqrt{\gamma_3 \gamma_5}
 \end{equation} 
-is satisfied. Then, for arbitrary values of $\delta_2, \delta_3, \delta_3$, there exist positive constant controller gains $k_1, k_2$ such that $\left[\sigma^\top, z^\top\right]^\top$ is globally robust finite-stable.
+is satisfied. Then, for arbitrary values of $\delta_2, \delta_3, \delta_3$, there exist positive constant controller gains $k_1, k_2$ such that $\left[x^\top, z^\top\right]^\top$ is globally robust finite-stable.
 \end{theorem}
 
 \subsubsection{Algorithm 1}

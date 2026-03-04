@@ -43,7 +43,8 @@ Using same adaptive law as \cite{Sht:10}
 \begin{rmk}
     \begin{itemize}
         \item The theorem and proof can be extended to $n$ dimensions by separating the problem into $n$ one-dimensional cases
-        \item The proof is similar to that of Shtessel et al. \cite{Sht:10}
+        \item GSTA is considered proven by Castillo et al. \cite{Cas:18}
+        \item The rest of the proof is similar to that of Shtessel et al. \cite{Sht:10}
     \end{itemize}
 \end{rmk}
 
@@ -66,13 +67,26 @@ where $\xi = \left[\eta_1^\top, \eta_2^\top, q^\top\right]^\top$, here $\eta_1 =
 \subsubsection{Tracking control law using AGSTA}
 We choose sliding manifold
 \begin{equation}
-    \sigma = \zeta - \zeta \in R^{6+(n-1)}
+    \sigma = \zeta - \zeta_r \in R^{6+(n-1)}
 \end{equation}
-and the control input is given by
+where $\zeta$ are velocities of the body and $\zeta_r$ is a velocity reference trajectory. The control input is given by
 \begin{equation}
     \tau(q) = u_{\text{AGSTA}} \in R^{6+(n-1)}
 \end{equation}
 
+The derivative of the sliding variable is 
+\begin{equation}
+    \dot{\sigma} = M^{-1}(\cdot)\left[-C(\cdot)(\zeta)-D(\cdot)(\zeta) - g(\cdot) + \tau(\cdot)\right] - \dot{\zeta}_r
+\end{equation}
+using $\zeta = \zeta_r + \sigma$
+\begin{equation}
+    \dot{\sigma} = M^{-1}(\cdot)\left[-C(\cdot)(\zeta_r + \sigma)-D(\cdot)(\zeta_r + \sigma) - g(\cdot) + \tau(\cdot)\right] - \dot{\zeta}_r
+\end{equation}
+\begin{rmk}
+    If time: Can Kristin explain why $(\cdot)$ was used to replace the arguments? 
+\end{rmk}
+
+The model is then divided into it's respective degrees of freedom and $\tau(q) = u_{AGSTA}$ is applied.
 % TODO: write down the AIAUV controller for this
 
 \subsection{Experiments}
