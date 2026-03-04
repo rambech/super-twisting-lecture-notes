@@ -242,7 +242,7 @@ To simplify the Lyapunov analysis we perform a change of variable
         \end{bmatrix}
        \end{equation}
        \begin{rmk}
-        The term $- 2\epsilon I$ is likely there to simplify the right-hand side
+        (The term $- 2\epsilon I$ is likely there to simplify the right-hand side)
        \end{rmk}
        To ensure positive definite $\tilde{Q}$ we enforce
         \begin{equation}
@@ -253,6 +253,9 @@ To simplify the Lyapunov analysis we perform a change of variable
           \alpha > \frac{\epsilon\delta^2 + \left(\lambda + 4\epsilon^2\right)\left(2\epsilon + \delta\right) + \epsilon}{\lambda}
           \label{eq:shtessel-inequality-19}
         \end{equation}
+        \begin{rmk}
+            There would be a lot of calculations to confirm this, so I haven't bothered
+        \end{rmk}
         We then have that
         \begin{equation}
           \dot{V}_0 \leq - \frac{1}{|z_1|}z^\top\tilde{Q}z \leq - \frac{\epsilon}{|z_1|}z^\top z = - \frac{\epsilon}{|z_1|}\norm{z}^2
@@ -306,7 +309,7 @@ To simplify the Lyapunov analysis we perform a change of variable
             &+ \frac{\omega_1}{\sqrt{2\gamma_1}}\left|\alpha - \alpha^*\right| + \frac{\omega_2}{\sqrt{2\gamma_2}} \left|\beta - \beta^*\right|
           \end{split}
         \end{equation}
-        Assuming the adaptation law \eqref{eq:adaptation-law} makes the adaptive gains $\alpha(t)$ and $\beta(t)$ bounded there exists positive constants $\alpha^*$ and $\beta^*$ such that $\alpha(t) - \alpha^* > 0$ and $\beta(t) - \beta^* > 0, \ \forall t \geq 0$.
+        Assuming the adaptation law \eqref{eq:adaptation-law} makes the adaptive gains $\alpha(t)$ and $\beta(t)$ bounded there exists positive constants $\alpha^*$ and $\beta^*$ such that $\alpha(t) - \alpha^* < 0$ and $\beta(t) - \beta^* < 0, \ \forall t \geq 0$.
         Using this assumption we can reduce the upper bound expression to
         \begin{equation}
             \dot{V}(z, \alpha, \beta) \leq -\eta V(z,\alpha,\beta)^{1/2} + \xi
@@ -317,7 +320,11 @@ To simplify the Lyapunov analysis we perform a change of variable
           \xi = -\left|\alpha - \alpha^*\right|\left(\frac{1}{\gamma_1}\dot{\alpha} - \frac{\omega_1}{\sqrt{2\gamma_1}}\right) - \left|\beta - \beta^*\right|\left(\frac{1}{\gamma_2}\dot{\beta} - \frac{\omega_2}{\sqrt{2\gamma_2}}\right) 
         \end{equation}
         We want to ensure $\xi = 0$
-
+        \begin{rmk}
+            $\dot{\alpha} = \omega_1\frac{\gamma_1}{\sqrt{2\gamma_1}} = \omega_1\frac{\gamma_1\cdot\sqrt{\gamma_1}}{\sqrt{2\gamma_1}\cdot\sqrt{\gamma_1}}
+            = \omega_1\frac{\gamma_1\cdot\sqrt{\gamma_1}}{\sqrt{2}\gamma_1}
+            = \omega_1\sqrt{\frac{\gamma_1}{2}} $ 
+        \end{rmk}
         \begin{equation}
           \dot{\alpha} = \omega_1 \sqrt{\frac{\gamma_1}{2}}
           \label{eq:shtessel-alpha-dot}
@@ -331,7 +338,7 @@ To simplify the Lyapunov analysis we perform a change of variable
         \end{equation}
 
         \textbf{Observe.}
-        For the controller to converge in finite time the inequality \eqref{eq:shtessel-inequality-19}. This implies that $\alpha(t)$ must increase according to \eqref{eq:shtessel-alpha-dot} until \eqref{eq:shtessel-inequality-19} is met in order to guarantee a positive definite $\tilde{Q}$ matrix.
+        For the controller to converge in finite time the inequality \eqref{eq:shtessel-inequality-19} must hold. This implies that $\alpha(t)$ must increase according to \eqref{eq:shtessel-alpha-dot} until \eqref{eq:shtessel-inequality-19} is met in order to guarantee a positive definite $\tilde{Q}$ matrix.
 
         \begin{quote}
           Also, as soon as the sliding variable $\sigma$ and its derivative converges to zero it does not make sense to increase $\alpha(t)$ and $\beta(t)$ by making $\dot{\alpha} = 0$ as $\sigma = 0$. - Shtessel et al. \cite{Sht:10}
